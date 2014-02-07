@@ -14,6 +14,7 @@ function calibrate() {
   calibrated = true;
   led.off();
   console.log("You can add the coffee now!")
+  fs.writeFile('logfile.csv', "date ,"+"time ,"+"weight ,", function (err) {});
 }
 
 function measure() {
@@ -29,11 +30,11 @@ function needCoffee() {
 	var currentdate = new Date(); 
 	var datetime = currentdate.getDate() + "/"
 	    + (currentdate.getMonth()+1)  + "/" 
-	    + currentdate.getFullYear() + "\t"  
+	    + currentdate.getFullYear() + " , "  
 	    + currentdate.getHours() + ":"  
 	    + currentdate.getMinutes() + ":" 
 	    + currentdate.getSeconds();
-	fs.appendFile('logfile.txt', datetime+' '+currentWeight+'\n', function (err) {});
+	fs.appendFile('logfile.csv', datetime+' , '+currentWeight+'\n', function (err) {});
 
 }
 

@@ -29,4 +29,4 @@ build
 
 node_modules
 
-*.txt
+*.csv
