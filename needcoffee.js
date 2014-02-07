@@ -62,7 +62,7 @@ board.on("ready", function() {
   console.log("calibrating.... (please wait for light to switch off)");
 
   // Wait 60 seconds to calibrate scales (60000)
-  setTimeout(calibrate,6000);
+  setTimeout(calibrate,60000);
 
   // Start logging each minute (60000)
   setInterval(measure,60000);
