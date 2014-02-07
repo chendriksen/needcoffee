@@ -18,8 +18,9 @@ function calibrate() {
 }
 
 function measure() {
-	weight = (latestReading-zero)*2.09
+	weight = (latestReading - zero)*2.09
 	allReadings.push(weight);
+  // try console log allReadings?
 	console.log(weight);
 }
 
@@ -53,7 +54,7 @@ board.on("ready", function() {
   	latestReading = voltage;
   	if (calibrated == false) {
   		calibrationValues.push(voltage);
-  	}
+  	};
   });
 
   // LED to notify of calibration
@@ -67,8 +68,7 @@ board.on("ready", function() {
   setInterval(measure,60000);
 
   // Start actioning on measurements each 30 mins (1800000)
-  needCoffee();
-  setInterval(needCoffee,300000);
+  setInterval(needCoffee,1800000);
 
 });
 
