@@ -19,14 +19,18 @@ function calibrate() {
 
 function measure() {
 	weight = (latestReading - zero)*2.09
-	allReadings.push(weight);
-  // try console log allReadings?
-	console.log(weight);
+  // check that there's actually weight on the scales
+  if (weight > 4) {
+	  allReadings.push(weight);
+    console.log(weight);
+  } else {
+    console.log("NOTE: No coffee detected")
+  }
 }
 
 function needCoffee() {
-  // Slice point needs to be number of values logged in last period
-  var arr = allReadings.slice(-5);
+  // Slice point is number of values to be taken into calculations
+  var arr = allReadings.slice(-30);
 	currentWeight = arr.reduce(function(a, b){ return a + b; }, 0) / (arr.length || 1);
 	var currentdate = new Date(); 
 	var datetime = currentdate.getDate() + "/"
@@ -69,6 +73,13 @@ board.on("ready", function() {
 
   // Start actioning on measurements each 30 mins (1800000)
   setInterval(needCoffee,1800000);
+  if (action = "weight") {
+    console.log(latestReading);
+    action = "";
+  } else {
+    console.log("> ");
+    var action = readline();
+  }
 
 });
 
