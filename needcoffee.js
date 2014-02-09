@@ -10,7 +10,6 @@ var five = require("johnny-five"),
     weight = 0;
 
 function calibrate() {
-  console.log("calibrating.... (please wait for light to switch off)");
   zero = calibrationValues.reduce(function(a, b){ return a + b; }, 0) / (calibrationValues.length || 1);
   calibrated = true;
   led.off();
@@ -66,6 +65,7 @@ board.on("ready", function() {
   led.on();
 
   // Wait 60 seconds to calibrate scales (60000)
+  console.log("calibrating.... (please wait for light to switch off)");
   setTimeout(calibrate,60000);
 
   // Start logging each minute (60000)
