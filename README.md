@@ -1,5 +1,5 @@
-needcoffee
-==========
+needcoffee.js
+=============
 
 a nodebot hack that makes sure you never run out of fresh coffee (or anything!)
 
