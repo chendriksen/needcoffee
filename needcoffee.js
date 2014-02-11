@@ -11,36 +11,49 @@ var five = require("johnny-five"),
 
 function calibrate() {
   zero = calibrationValues.reduce(function(a, b){ return a + b; }, 0) / (calibrationValues.length || 1);
-  calibrated = true;
-  led.off();
-  console.log("You can add the coffee now!")
-  fs.writeFile('logfile.csv', "date ,"+"time ,"+"weight ,", function (err) {});
+  // if current weight is reading close to zero
+  if (weight - zero < 5) {
+    calibrated = true;
+    led.off();
+    console.log("You can add the coffee now!")
+    fs.writeFile('logfile.csv', "date ,"+"time ,"+"weight ,"+"\n", function (err) {});
+  // else do some more calibrating
+  } else {
+    console.log("still working...")
+    setTimeout(calibrate,15000);
+  }
 }
 
 function measure() {
-	weight = (latestReading - zero)*2.09
   // check that there's actually weight on the scales
-  if (weight > 4) {
-	  allReadings.push(weight);
-    console.log(weight);
+  if ((latestReading - zero) > 4) {
+	  allReadings.push(latestReading);
+    console.log(latestReading);
   } else {
     console.log("NOTE: No coffee detected")
   }
 }
 
-function needCoffee() {
-  // Slice point is number of values to be taken into calculations
-  var arr = allReadings.slice(-30);
-	currentWeight = arr.reduce(function(a, b){ return a + b; }, 0) / (arr.length || 1);
-	var currentdate = new Date(); 
-	var datetime = currentdate.getDate() + "/"
-	    + (currentdate.getMonth()+1)  + "/" 
-	    + currentdate.getFullYear() + " , "  
-	    + currentdate.getHours() + ":"  
-	    + currentdate.getMinutes() + ":" 
-	    + currentdate.getSeconds();
-	fs.appendFile('logfile.csv', datetime+' , '+currentWeight+'\n', function (err) {});
+function updateLog() {
+  // Slice point is number of values to be taken into calculations (4)
+  var arr = allReadings.slice(-4);
+  var currentWeight = arr.reduce(function(a, b){ return a + b; }, 0) / (arr.length || 1);
+  currentWeight = (currentWeight- zero);
+  hourlyLog.push(currentWeight);
+}
 
+function updateForecast() {
+  return false;
+}
+
+function needCoffee() {
+  updateLog();
+  // should use hourlyLog to calculate rate of consumption, and forecast hours until running out
+  orderRequired = updateForecast();
+  // if it's the time to re-order coffee (based on forecast) order more coffee
+  if (orderRequired) {
+    // order coffee (with a tweet)
+  }
 }
 
 board.on("ready", function() {
@@ -64,15 +77,15 @@ board.on("ready", function() {
   // LED to notify of calibration
   led.on();
 
-  // Wait 60 seconds to calibrate scales (60000)
+  // Wait 30 seconds to calibrate scales (30000)
   console.log("calibrating.... (please wait for light to switch off)");
-  setTimeout(calibrate,60000);
+  setTimeout(calibrate,30000);
 
-  // Start logging each minute (60000)
-  setInterval(measure,60000);
+  // Start logging each 5 minutes (300000)
+  setInterval(measure,300000);
 
-  // Start actioning on measurements each 30 mins (1800000)
-  setInterval(needCoffee,1800000);
+  // Start actioning on measurements each 1 hour(s) (3600000)
+  setInterval(needCoffee,3600000);
 
 });
 
